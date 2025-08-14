@@ -4,10 +4,31 @@ services:
     env: go  
     plan: free  
     buildCommand: |  
-      # Install Task  
-      sh -c "$(curl -ssL https://taskfile.dev/install.sh)" -- -d -b ./bin  
-      # Run the complete build sequence  
+      # Install Task runner  
+      curl -sL https://taskfile.dev/install.sh | sh  
+      chmod +x ./bin/task  
+      # Install Go dependencies first  
+      go mod download  
+      go mod tidy  
+      # Download UI assets (this creates ui/dist)  
       ./bin/task ui  
-      ./bin/task gen    
+      # Generate API code (this creates internal/api)  
+      ./bin/task gen  
+      # Build the server  
       ./bin/task server  
-    startCommand: ./bin/teldrive run
+    startCommand: ./bin/teldrive run  
+    envVars:  
+      - key: DB_DATA_SOURCE  
+        sync: false  
+      - key: JWT_SECRET  
+        generateValue: true  
+      - key: TG_UPLOADS_ENCRYPTION_KEY  
+        generateValue: true  
+      - key: SERVER_PORT  
+        value: "8080"  
+  
+databases:  
+  - name: teldrive-postgres  
+    databaseName: teldrive  
+    user: teldrive  
+    plan: free
