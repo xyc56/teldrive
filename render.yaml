@@ -1,30 +1,14 @@
 services:  
   - type: web  
     name: teldrive  
-    env: go  
+    env: docker  
+    image:  
+      url: ghcr.io/tgdrive/teldrive:latest  
     plan: free  
-    buildCommand: |  
-      # Install Task runner  
-      curl -sL https://taskfile.dev/install.sh | sh  
-      # Download UI assets  
-      ./bin/task ui  
-      # Generate API code  
-      ./bin/task gen  
-      # Build the application  
-      ./bin/task server  
-    startCommand: ./bin/teldrive run  
     envVars:  
       - key: DB_DATA_SOURCE  
         sync: false  
       - key: JWT_SECRET  
         generateValue: true  
       - key: TG_UPLOADS_ENCRYPTION_KEY  
-        generateValue: true  
-      - key: SERVER_PORT  
-        value: "8080"  
-  
-databases:  
-  - name: teldrive-postgres  
-    databaseName: teldrive  
-    user: teldrive  
-    plan: free
+        generateValue: true
