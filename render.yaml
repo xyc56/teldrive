@@ -3,4 +3,13 @@ services:
     name: teldrive  
     env: docker  
     image:  
-      url: ghcr.io/tgdrive/teldrive:latest
+      url: ghcr.io/tgdrive/teldrive:latest  
+    plan: free  
+    port: 8080  
+    envVars:  
+      - key: DB_DATA_SOURCE  
+        sync: false  
+      - key: JWT_SECRET  
+        generateValue: true  
+      - key: TG_UPLOADS_ENCRYPTION_KEY  
+        generateValue: true
